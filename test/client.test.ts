@@ -52,20 +52,20 @@ test('chave malformada falha com mensagem clara', () => {
 test('mutação envia Idempotency-Key UUID automaticamente', async () => {
   const { korbit, calls } = fakeKorbit([{ status: 201, body: { id: 'pi_1' } }]);
   await korbit.payments.create({ amount: 14990, paymentMethod: 'PIX' });
-  assert.match(calls[0].headers['Idempotency-Key'], /^[0-9a-f-]{36}$/);
+  assert.match(calls[0]!.headers['Idempotency-Key']!, /^[0-9a-f-]{36}$/);
 });
 
 test('idempotencyKey explícita é respeitada', async () => {
   const { korbit, calls } = fakeKorbit([{ status: 201, body: {} }]);
   const key = '11111111-2222-3333-4444-555555555555';
   await korbit.payments.create({ amount: 100, paymentMethod: 'PIX' }, { idempotencyKey: key });
-  assert.equal(calls[0].headers['Idempotency-Key'], key);
+  assert.equal(calls[0]!.headers['Idempotency-Key'], key);
 });
 
 test('GET não envia Idempotency-Key', async () => {
   const { korbit, calls } = fakeKorbit([{ status: 200, body: { availableMinor: 100 } }]);
   await korbit.balance.get();
-  assert.equal(calls[0].headers['Idempotency-Key'], undefined);
+  assert.equal(calls[0]!.headers['Idempotency-Key'], undefined);
 });
 
 test('429 com Retry-After é retificado e re-tentado', async () => {
@@ -125,7 +125,7 @@ test('paginação: iterate() percorre todas as páginas', async () => {
   const ids: string[] = [];
   for await (const order of korbit.orders.iterate({ limit: 2 })) ids.push(order.id);
   assert.deepEqual(ids, ['o1', 'o2', 'o3']);
-  assert.match(String(calls[1].url), /cursor=cursor-2/);
+  assert.match(String(calls[1]!.url), /cursor=cursor-2/);
 });
 
 test('escape hatch request() expõe status/headers (streaming CSV)', async () => {
@@ -137,7 +137,7 @@ test('escape hatch request() expõe status/headers (streaming CSV)', async () =>
   });
   assert.equal(response.status, 200);
   assert.match(String(response.headers.get('content-type')), /text\/csv/);
-  assert.match(String(calls[0].url), /view=full/);
+  assert.match(String(calls[0]!.url), /view=full/);
 });
 
 test('falha de rede vira NetworkError (retriável)', async () => {
@@ -154,7 +154,7 @@ test('falha de rede vira NetworkError (retriável)', async () => {
 test('query string descarta valores vazios/undefined', async () => {
   const { korbit, calls } = fakeKorbit([{ status: 200, body: { data: [], next_cursor: null } }]);
   await korbit.orders.list({ cursor: undefined, limit: 5, status: 'PAID' });
-  const url = calls[0].url;
+  const url = calls[0]!.url;
   assert.match(String(url), /limit=5/);
   assert.match(String(url), /status=PAID/);
   assert.doesNotMatch(String(url), /cursor/);

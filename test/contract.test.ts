@@ -40,12 +40,12 @@ function coveredPaths(): Set<string> {
     if (!file.endsWith('.ts')) continue;
     const source = readFileSync(new URL(`./${file}`, dir), 'utf8');
     for (const match of source.matchAll(/'([^']*)'|`([^`]*)`/g)) {
-      const literal = match[1] ?? match[2] ?? '';
+      const literal = (match[1] ?? match[2] ?? '') as string;
       if (!literal.includes('/v1/')) continue;
       const normalized = literal
         .replace(/\$\{[^}]*\}/g, '{param}')
         .replace(/\{[^/]*\}/g, '{param}')
-        .split('?')[0];
+        .split('?')[0] ?? '';
       covered.add(normalized);
     }
   }
@@ -78,7 +78,7 @@ test('caminhos do SDK não inventam endpoints fora da spec', () => {
 
 test('tipos de evento do SDK = catálogo da spec', async () => {
   const { WEBHOOK_EVENT_TYPES } = await import('../src/resources/webhooks.js');
-  const createSchema = SPEC.paths['/v1/webhook-subscriptions'].post as {
+  const createSchema = (SPEC.paths['/v1/webhook-subscriptions'] as Record<string, { post?: unknown }>).post as {
     requestBody?: { content?: Record<string, { schema?: unknown }> };
   };
   const schema = JSON.stringify(createSchema.requestBody?.content ?? {});

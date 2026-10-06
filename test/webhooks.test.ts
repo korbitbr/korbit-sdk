@@ -48,7 +48,7 @@ test('timestamp fora da tolerância é rejeitado (anti-replay)', () => {
 
 test('tolerância customizada é honrada', () => {
   const old = Math.floor(Date.now() / 1_000) - 15 * 60;
-  const event = verifyWebhook(PAYLOAD, headersFor('msg_1', old, PAYLOAD), SECRET, {
+  const event = verifyWebhook<{ type: string }>(PAYLOAD, headersFor('msg_1', old, PAYLOAD), SECRET, {
     toleranceSeconds: 3600,
   });
   assert.equal(event.type, 'payment.succeeded.v1');
