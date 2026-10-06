@@ -1,0 +1,46 @@
+{
+  "name": "@korbitbr/sdk",
+  "version": "0.1.0",
+  "description": "SDK oficial da Korbit para Node.js: pagamentos PIX e cartão, catálogo, assinaturas, saldo, saques e webhooks — com idempotência automática, retries e erros tipados.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Korbit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/korbitbr/korbit-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/korbitbr/korbit-sdk/issues"
+  },
+  "homepage": "https://docs.korbit.com.br/sdk/visao-geral",
+  "keywords": ["korbit", "pagamentos", "pix", "cartão", "sdk", "brazil", "payments"],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md", "LICENSE"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "node --import tsx --test test/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.0",
+    "@types/node": "^22.0.0"
+  }
+}
